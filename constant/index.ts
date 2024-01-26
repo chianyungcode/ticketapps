@@ -15,4 +15,8 @@ export const navigationlinks = [
     name: "Profile",
     href: "/settings",
   },
+  {
+    name: "Event",
+    href: "/event",
+  },
 ];

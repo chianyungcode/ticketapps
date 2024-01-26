@@ -16,4 +16,58 @@ model User {
   address   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  order Order[]
+}
+
+model Ticket {
+  id          String   @id @default(uuid())
+  ticketPrice Decimal
+  quantity    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  eventticket EventTicket[] @relation("TicketToEventTicket")
+  orders      Order[]
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  date      DateTime
+  name      String
+  location  String
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  eventticket EventTicket[] @relation("EventToEventTicket")
+}
+
+model EventTicket {
+  id       String @id @default(uuid())
+  eventId  String
+  ticketId String
+
+  event  Event  @relation("EventToEventTicket", fields: [eventId], references: [id])
+  ticket Ticket @relation("TicketToEventTicket", fields: [ticketId], references: [id])
+
+  @@index([eventId])
+  @@index([ticketId])
+}
+
+model Order {
+  id            String   @id @default(uuid())
+  userId        String
+  ticketId      String
+  isPaid        Boolean  @default(false)
+  paymentMethod String
+  totalPayment  Decimal
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  ticket Ticket @relation(fields: [ticketId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([ticketId])
+  @@index([userId])
 }

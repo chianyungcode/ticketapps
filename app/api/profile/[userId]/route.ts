@@ -31,6 +31,9 @@ export async function POST(
     return NextResponse.json(newProfile);
   } catch (error) {
     console.log(error);
+    return new NextResponse("API ERROR [POST]: /api/profile/[userId]", {
+      status: 500,
+    });
   }
 }
 

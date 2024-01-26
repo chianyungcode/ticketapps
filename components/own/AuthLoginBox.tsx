@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 interface AuthLoginBoxProps {
   session: string | null;
@@ -35,6 +36,10 @@ const loginFormSchema = z.object({
 
 const AuthLoginBox: React.FC<AuthLoginBoxProps> = ({ session }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordShowed, setPasswordShowed] = useState(false);
+
+  console.log("Rendered");
+
   const { isLoaded, signIn, setActive } = useSignIn();
   const router = useRouter();
 
@@ -133,7 +138,25 @@ const AuthLoginBox: React.FC<AuthLoginBoxProps> = ({ session }) => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="password" {...field} type="password" />
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        placeholder="password"
+                        type={passwordShowed ? "password" : "text"}
+                        className="pr-14"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-2"
+                        onClick={() => setPasswordShowed(!passwordShowed)}
+                      >
+                        {passwordShowed ? (
+                          <EyeIcon className="h-6 w-6 text-gray-200" />
+                        ) : (
+                          <EyeOffIcon className="h-6 w-6 text-gray-200" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -32,7 +32,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en" className={myFont.className}>
-        <body className="h-screen bg-white">
+        <body className="min-h-screen bg-white">
           <Toaster />
           {children}
         </body>

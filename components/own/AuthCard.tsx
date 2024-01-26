@@ -23,6 +23,7 @@ import { auth, useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 import OtpInput from "react-otp-input";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -281,6 +282,12 @@ const AuthCard: React.FC<AuthCardProps> = ({ userId }) => {
           <Button type="submit">Sign up</Button>
         </form>
       </Form>
+      <div className="flex justify-center">
+        Anda sudah memiliki akun?
+        <Link href="/sign-in" className="ml-2 underline">
+          Login disini
+        </Link>
+      </div>
     </div>
   );
 };

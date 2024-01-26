@@ -4,35 +4,41 @@ import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import React from "react";
 import { SearchIcon } from "lucide-react";
-import { css } from "@emotion/react";
+import { faker } from "@faker-js/faker";
+import CardTicket from "@/app/(root)/components/CardTicket";
 
 const HomePage = async () => {
   const { userId } = auth();
 
+  const ticketname = faker.location.city();
+
   return (
     <div className="bg-white">
-      <Navbar session={userId} />
+      <Navbar />
       <MidLayout>
-        <main className="main mx-auto h-[2400px] w-full">
-          <section id="hero-section" className="grid grid-cols-2 ">
+        <main className="mid-gradient mx-auto h-[2400px] w-full">
+          <section
+            id="hero-section"
+            className="relative z-40 grid grid-cols-2 "
+          >
             <div className="space-y-2 p-7">
-              <h1 className="text-5xl">Get ur latest ticket here</h1>
+              <h1 className="z-50 text-5xl">Get ur latest ticket here</h1>
               <p className="text-sm">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                 Inventore, quas!
               </p>
             </div>
-            <div className="card-gradient">
-              <div className="gradient" style={{ zIndex: 1 }} />
-              {/* <div className="move-box"></div> */}
-              <div className="flex h-[10rem] flex-col items-center justify-center gap-y-2 px-4 py-6 shadow-lg">
-                <Image
-                  src="/ticket.svg"
-                  alt="heroicon-ticket"
-                  width={50}
-                  height={100}
-                />
-                <h3>Get your ticket cheaper than others in the world!</h3>
+            <div className="side-section">
+              <div className="gradient-card flex h-[10rem] flex-col items-center justify-center gap-y-2  px-4 py-6 shadow-lg">
+                <div style={{ zIndex: 2 }}>
+                  <Image
+                    src="/ticket.svg"
+                    alt="heroicon-ticket"
+                    width={50}
+                    height={100}
+                  />
+                  <h3>Get your ticket cheaper than others in the world!</h3>
+                </div>
               </div>
             </div>
           </section>
@@ -55,16 +61,11 @@ const HomePage = async () => {
               </div>
             </div>
 
-            <div
-              className={css`
-                grid-column: 3 / span 4;
-                background-color: antiquewhite;
-                margin: 0.25rem 0;
-                width: 50rem;
-                height: 100%;
-              `}
-            >
-              <h1>Hets</h1>
+            <div className="col-span-4 py-4">
+              <h1 className="text-2xl">List Ticket</h1>
+              <div className="px-2 py-4">
+                <CardTicket ticketname={ticketname} />
+              </div>
             </div>
           </section>
         </main>

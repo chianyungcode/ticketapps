@@ -1,0 +1,16 @@
+.customButton {
+  width: calc(100% - 2rem);
+  background: transparent;
+  color: rgb(17, 24, 39);
+}
+
+.customButton:hover {
+  background: linear-gradient(to right, #f56565, #ffffff);
+  width: 100%;
+}
+
+.transitionButton {
+  transition:
+    background 2s ease-out 0.1s,
+    width 2s ease-out 0.1s;
+}
