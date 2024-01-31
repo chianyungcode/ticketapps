@@ -1,9 +1,9 @@
-import Navbar from "@/components/own/Navbar";
+import SessionProvider from "@/provider/SessionProvider";
 
 const LoggedInLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <Navbar />
+      <SessionProvider />
       {children}
     </>
   );

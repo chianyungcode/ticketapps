@@ -1,0 +1,9 @@
+.containerGradient {
+  position: absolute;
+  background-image: linear-gradient(to bottom right, #fceed8, orange);
+  width: 40%;
+  height: 20%;
+  top: 0;
+  right: 0;
+  filter: blur(20rem);
+}

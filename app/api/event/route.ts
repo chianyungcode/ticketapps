@@ -4,14 +4,14 @@ import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {
   try {
-    const { name, location, eventdate, isactive } = await req.json();
+    const { name, location, date, isActive } = await req.json();
 
     const newEvent: Event = await prismadb.event.create({
       data: {
         name,
         location,
-        date: eventdate,
-        isActive: isactive,
+        date,
+        isActive,
       },
     });
 

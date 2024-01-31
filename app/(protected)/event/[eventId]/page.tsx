@@ -1,21 +1,25 @@
-import Heading from "@/components/own/Heading";
 import MidLayout from "@/components/own/MidLayout";
-import { Separator } from "@/components/ui/separator";
-import prismadb from "@/lib/prismadb";
-import { css } from "@emotion/react";
-import axios from "axios";
-import { auth } from "@clerk/nextjs";
 
-const EventDetailPage = async () => {
+import FormEvent from "../create/components/FormEvent";
+import { getSpecificData } from "@/lib/actions";
+import { type Event } from "@prisma/client";
+import prismadb from "@/lib/prismadb";
+
+interface EventDetailPageProps {
+  params: { eventId: string };
+}
+
+const EventDetailPage: React.FC<EventDetailPageProps> = async ({ params }) => {
+  const event: Event | null = await prismadb.event.findUnique({
+    where: {
+      id: params.eventId,
+    },
+  });
+
   return (
     <div className="h-[100vh]">
       <MidLayout>
-        <Heading
-          title="Create Event"
-          description="Create Event for a Concert"
-        />
-        <Separator className="my-4" />
-        <FormEvent />
+        <FormEvent initialData={event} />
       </MidLayout>
     </div>
   );

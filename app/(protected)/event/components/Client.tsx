@@ -6,9 +6,8 @@ import { Event } from "@prisma/client";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import ButtonCustom from "./ButtonCustom";
-import axios from "axios";
 import FilterEvent from "./FilterEvent";
 
 interface ClientProps {
@@ -17,7 +16,6 @@ interface ClientProps {
 
 const Client: React.FC<ClientProps> = ({ eventdata }) => {
   const [eventActive, setEventActive] = useState(true);
-  const [dataEffect, setDataEffect] = useState<Event[]>([]);
 
   const location = eventdata.map((event) => {
     return {
@@ -25,17 +23,6 @@ const Client: React.FC<ClientProps> = ({ eventdata }) => {
       label: event.location.charAt(0).toUpperCase() + event.location.slice(1),
     } as const;
   });
-
-  //   const location = "?location=jakarta" || undefined;
-
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       const response = await axios.get(`/api/event${location}`);
-  //       setDataEffect(response.data);
-  //     };
-
-  //     fetchData();
-  //   }, [location]);
 
   return (
     <>

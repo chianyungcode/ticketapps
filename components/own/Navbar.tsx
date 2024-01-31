@@ -1,45 +1,73 @@
-import { navigationlinks } from "@/constant";
-import { UserButton, auth } from "@clerk/nextjs";
+"use client";
+
 import Link from "next/link";
 import React from "react";
-import { Separator } from "../ui/separator";
-import { Button } from "../ui/button";
-import { MoveUpRight } from "lucide-react";
+import { usePathname } from "next/navigation";
 
-const Navbar = () => {
-  const { userId } = auth();
+interface NavbarProps {
+  session: string | null;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ session }) => {
+  const pathname = usePathname();
+
+  const router = [
+    {
+      href: "/",
+      label: "Home",
+      active: pathname === "/",
+    },
+    {
+      href: "/events",
+      label: "Events",
+      active: pathname === "/events",
+    },
+    {
+      href: "/dashboard",
+      label: "Dashboard",
+      active: pathname === "/dashboard",
+    },
+    {
+      href: "/transaction",
+      label: "Transaction",
+      active: pathname === "/transaction",
+    },
+    {
+      href: "/experimentalmlbb",
+      label: "MLBB",
+      active: pathname === "/experimentalmlbb",
+    },
+  ];
 
   return (
-    <div className="sticky top-0 z-50 flex h-[80px] w-full bg-white px-6 py-4">
+    <div className="sticky top-0 z-50 flex h-[80px] w-full border-b bg-white px-6 py-4">
       <div className="mx-auto flex max-w-6xl flex-1 items-center justify-between">
-        <h2>{userId}</h2>
-        <nav className="flex items-center justify-between gap-8">
-          {navigationlinks.map((item, index) => (
-            <Link
-              className="cursor-pointer"
-              key={item.name}
-              href={index === 3 ? userId + "/" : item.href}
-            >
-              {item.name}
+        <h2>Logo</h2>
+        <nav className="flex items-center gap-8 bg-teal-400">
+          {router.map((route) => (
+            <Link href={route.href} key={route.label}>
+              {route.label}
             </Link>
           ))}
-          <Separator orientation="vertical" className="h-4 bg-black" />
-          {userId ? (
-            <UserButton />
-          ) : (
-            <>
-              <Link href={"/sign-in"}>Sign in</Link>
-              <Link
-                href="/sign-up"
-                className="group flex items-center justify-center gap-1 rounded-3xl bg-black px-6 py-[12px] text-white"
-              >
-                Sign up
-                <MoveUpRight className="h-4 w-4 transition group-hover:-translate-y-1 group-hover:translate-x-[0.2rem]" />
-              </Link>
-            </>
-          )}
         </nav>
-        {/* <UserButton /> */}
+        {session ? (
+          <div>Logged in</div>
+        ) : (
+          <div className="space-x-4">
+            <Link
+              className="rounded-md border border-black px-4 py-2"
+              href="sign-in"
+            >
+              Sign In
+            </Link>
+            <Link
+              className="rounded-md bg-black px-4 py-2 text-gray-50"
+              href="sign-up"
+            >
+              Sign Up
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

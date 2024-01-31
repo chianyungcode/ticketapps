@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import prismadb from "./prismadb";
+import { type Event } from "@prisma/client";
 
 export const getSpecificUser = async (userId: string | null) => {
   try {
@@ -18,7 +19,6 @@ export const getAllEvent = async () => {
 };
 
 // Buatan sendiri
-
 export const getSpecificData = async (apiUrl: string) => {
   try {
     const response = await axios.get(apiUrl);

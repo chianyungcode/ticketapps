@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark, neobrutalism } from "@clerk/themes";
 import localFont from "next/font/local";
 import { Toaster } from "react-hot-toast";
-
-const inter = Inter({ subsets: ["latin"] });
+import { QueryClient } from "@tanstack/react-query";
+import { ReactQueryClientProvider } from "@/provider/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,6 +17,8 @@ const myFont = localFont({
   src: "../public/font/PlusJakartaSans-SemiBold.ttf",
   display: "swap",
 });
+
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -31,12 +32,14 @@ export default function RootLayout({
         variables: { colorPrimary: "red" },
       }}
     >
-      <html lang="en" className={myFont.className}>
-        <body className="min-h-screen bg-white">
-          <Toaster />
-          {children}
-        </body>
-      </html>
+      <ReactQueryClientProvider>
+        <html lang="en" className={myFont.className}>
+          <body className="min-h-screen bg-white">
+            <Toaster />
+            {children}
+          </body>
+        </html>
+      </ReactQueryClientProvider>
     </ClerkProvider>
   );
 }

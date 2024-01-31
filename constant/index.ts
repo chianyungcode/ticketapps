@@ -17,6 +17,6 @@ export const navigationlinks = [
   },
   {
     name: "Event",
-    href: "/event",
+    href: "/events",
   },
 ];

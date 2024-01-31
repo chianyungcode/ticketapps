@@ -5,6 +5,8 @@ import { Event } from "@prisma/client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import axios from "axios";
+import { useParams, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,136 +28,180 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import axios from "axios";
-
-import styles from "./FormEvent.module.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+
+import Heading from "@/components/own/Heading";
+import styles from "./FormEvent.module.css";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getSpecificData } from "@/lib/actions";
 
 interface FormEventProps {
-  initialData?: Event;
+  initialData: Event | null;
 }
 
 const formSchema = z.object({
   name: z.string().min(1),
   location: z.string(),
-  eventdate: z.date({ required_error: "A date of birth is required" }),
-  isactive: z.boolean().default(false),
+  date: z.date({ required_error: "A date of birth is required" }),
+  isActive: z.boolean().default(false),
 });
 
+// REACT FC
 const FormEvent: React.FC<FormEventProps> = ({ initialData }) => {
+  const params = useParams();
+  const router = useRouter();
+
+  // Query Function
+  const { isLoading, data: dataEvent } = useQuery({
+    queryKey: ["event"],
+    queryFn: async () => {
+      const response = await getSpecificData(`/api/event/${params.eventId}`);
+      const jsonData = response.data;
+      console.log(jsonData);
+
+      return jsonData;
+    },
+    initialData: initialData,
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+    defaultValues: dataEvent || {
       name: "",
       location: "",
-      eventdate: new Date(),
-      isactive: false,
+      date: new Date(),
+      isActive: false,
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.post("/api/event", values);
-      console.log(response);
+      if (initialData) {
+        const response = await axios.patch(
+          `api/event/${params.eventId}`,
+          values,
+        );
+        router.push("/events");
+        router.refresh();
+        console.log(response);
+      } else {
+        const response = await axios.post("/api/event", values);
+        console.log(response);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-        <div className={styles.container}>
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Event Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Location</FormLabel>
-                <FormControl>
-                  <Input placeholder="Location" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="eventdate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Event Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground",
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+  const title = initialData ? "Edit event" : "Create Event";
+  const subtitle = initialData
+    ? "Edit event for a Concert"
+    : "Create event for a concert";
+  const submitBtn = initialData ? "Save changes" : "Submit";
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="isactive"
-          render={({ field }) => (
-            <FormItem className="flex max-w-sm flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Active event</FormLabel>
-                <FormDescription>This event is active or not</FormDescription>
-              </div>
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <>
+      <Heading title={title} description={subtitle} />
+      <Separator className="my-4" />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <div className={styles.container}>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>Event Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Location" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Event Date</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <FormItem className="flex max-w-sm flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Active event</FormLabel>
+                  <FormDescription>This event is active or not</FormDescription>
+                </div>
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+    </>
   );
 };
 
