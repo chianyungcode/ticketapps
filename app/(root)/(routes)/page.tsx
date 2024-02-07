@@ -6,6 +6,7 @@ import React from "react";
 import { SearchIcon } from "lucide-react";
 import { faker } from "@faker-js/faker";
 import CardTicket from "@/app/(root)/components/CardTicket";
+import SessionProvider from "@/provider/SessionProvider";
 
 const HomePage = async () => {
   const { userId } = auth();
@@ -14,7 +15,7 @@ const HomePage = async () => {
 
   return (
     <div className="bg-white">
-      <Navbar />
+      <SessionProvider />
       <MidLayout>
         <main className="mid-gradient mx-auto h-[2400px] w-full">
           <section
