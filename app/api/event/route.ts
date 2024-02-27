@@ -4,13 +4,14 @@ import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {
   try {
-    const { name, location, date, isActive } = await req.json();
+    const { name, location, date, isActive, ticketStock } = await req.json();
 
     const newEvent: Event = await prismadb.event.create({
       data: {
         name,
         location,
         date,
+        ticketStock: Number(ticketStock),
         isActive,
       },
     });
@@ -18,9 +19,7 @@ export const POST = async (req: Request) => {
     return NextResponse.json({
       status: "200",
       message: "Success",
-      data: {
-        newEvent,
-      },
+      data: newEvent,
     });
   } catch (error) {
     console.log("ERROR API [POST] : /api/event", error);
@@ -32,7 +31,7 @@ export const GET = async (req: Request) => {
   const { searchParams } = new URL(req.url);
 
   const location = searchParams.get("location") || undefined;
-  const isActive = searchParams.get("isActive") || undefined;
+  const isActive = searchParams.get("active") || undefined;
   const name = encodeURIComponent(searchParams.get("name") || "") || undefined;
 
   try {
@@ -41,7 +40,7 @@ export const GET = async (req: Request) => {
         name,
         location,
         isActive:
-          isActive === "true" ? true : isActive === "false" ? false : undefined,
+          isActive === "1" ? true : isActive === "0" ? false : undefined,
       },
     });
 

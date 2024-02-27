@@ -8,8 +8,8 @@ interface HeadingProps extends HTMLAttributes<HTMLDivElement> {
 const Heading: React.FC<HeadingProps> = ({ title, description, ...rest }) => {
   return (
     <div {...rest}>
-      <div className="text-3xl">{title}</div>
-      <div className="text-sm text-gray-400">{description}</div>
+      <div className="text-3xl font-bold text-gray-900">{title}</div>
+      <div className="text-sm font-medium text-gray-400">{description}</div>
     </div>
   );
 };

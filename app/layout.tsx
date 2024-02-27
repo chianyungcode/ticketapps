@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark, neobrutalism } from "@clerk/themes";
@@ -18,6 +19,8 @@ const myFont = localFont({
   display: "swap",
 });
 
+const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
+
 const queryClient = new QueryClient();
 
 export default function RootLayout({
@@ -33,8 +36,8 @@ export default function RootLayout({
       }}
     >
       <ReactQueryClientProvider>
-        <html lang="en" className={myFont.className}>
-          <body className="min-h-screen bg-white">
+        <html lang="en" className={plusJakartaSans.className}>
+          <body className="min-h-screen bg-[#F6F6F4]">
             <Toaster />
             {children}
           </body>

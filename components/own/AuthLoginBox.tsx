@@ -22,6 +22,7 @@ import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { OAuthStrategy } from "@clerk/nextjs/server";
 
 interface AuthLoginBoxProps {
   session: string | null;
@@ -37,11 +38,12 @@ const loginFormSchema = z.object({
 const AuthLoginBox: React.FC<AuthLoginBoxProps> = ({ session }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [passwordShowed, setPasswordShowed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [invalidAuth, setInvalidAuth] = useState(false);
 
-  console.log("Rendered");
+  const router = useRouter();
 
   const { isLoaded, signIn, setActive } = useSignIn();
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -56,6 +58,14 @@ const AuthLoginBox: React.FC<AuthLoginBoxProps> = ({ session }) => {
       router.push("/");
     }
   });
+
+  const signInWith = (strategy: OAuthStrategy) => {
+    return signIn?.authenticateWithRedirect({
+      strategy,
+      redirectUrl: "/sso-callback",
+      redirectUrlComplete: "/events",
+    });
+  };
 
   // Handle submit
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
@@ -79,8 +89,20 @@ const AuthLoginBox: React.FC<AuthLoginBoxProps> = ({ session }) => {
         // Redirect the user to a post sign-in route
         router.push("/");
       }
-    } catch (err) {
-      console.error(JSON.stringify(err, null, 2));
+    } catch (err: any) {
+      // console.error(JSON.stringify(err, null, 2));
+      const jsonError = JSON.stringify(err, null, 2);
+      const parsedError = JSON.parse(jsonError);
+
+      if (parsedError.errors[0].code === "form_identifier_not_found") {
+        setErrorMessage("Akun tidak ditemukan");
+      }
+      if (parsedError.errors[0].code === "form_password_incorrect") {
+        setErrorMessage("Password anda salah");
+      }
+
+      setInvalidAuth(true);
+      setIsLoading(false);
     }
   };
 
@@ -94,24 +116,24 @@ const AuthLoginBox: React.FC<AuthLoginBoxProps> = ({ session }) => {
           className="flex items-center justify-center gap-3 py-4"
           id="social-media-button"
         >
-          <Link
-            href="#"
+          <button
+            onClick={() => signInWith("oauth_google")}
             className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-black/50 px-2 py-2"
           >
             <FcGoogle className="h-5 w-5" />
             <p className="text-sm">
               Sign in with <strong>Google</strong>
             </p>
-          </Link>
-          <Link
-            href="#"
-            className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-black/50 px-2 py-2"
+          </button>
+          <button
+            className="flex flex-1 cursor-not-allowed items-center justify-center gap-1 rounded-lg border border-gray-300 px-2 py-2 text-gray-300"
+            disabled
           >
             <FiGithub className="h-4 w-4" />
             <p className="text-sm">
               Sign in with <strong>Github</strong>
             </p>
-          </Link>
+          </button>
         </div>
 
         <div className="divider">Or sign with</div>
@@ -158,12 +180,16 @@ const AuthLoginBox: React.FC<AuthLoginBoxProps> = ({ session }) => {
                       </button>
                     </div>
                   </FormControl>
-                  <FormMessage />
+                  {invalidAuth ? (
+                    <FormMessage className="flex items-center gap-x-2">
+                      {errorMessage}
+                    </FormMessage>
+                  ) : null}
                 </FormItem>
               )}
             />
             <div className="flex justify-end">
-              <Link href="/authentication/forgot-password">
+              <Link href="/forgot-password">
                 <p className="text-sm text-blue-500">Forgot password?</p>
               </Link>
             </div>

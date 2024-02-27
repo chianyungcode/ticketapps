@@ -21,10 +21,9 @@ export const getAllEvent = async () => {
 // Buatan sendiri
 export const getSpecificData = async (apiUrl: string) => {
   try {
-    const response = await axios.get(apiUrl);
-    const actualdata = response.data;
+    const { data } = await axios.get(apiUrl);
 
-    return actualdata;
+    return data;
   } catch (error) {
     console.log(error);
   }
@@ -41,5 +40,5 @@ export const postNewData = async <TData>({
   data,
 }: postNewDataProps<TData>): Promise<AxiosResponse> => {
   const response = await axios.post(apiEndpoint, data);
-  return response;
+  return response.data;
 };

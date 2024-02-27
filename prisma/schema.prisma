@@ -17,57 +17,88 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order Order[]
+  orders Order[]
+  images Image[]
 }
 
 model Ticket {
   id          String   @id @default(uuid())
-  ticketPrice Decimal
+  orderId     String
+  ticketPrice Int
   quantity    Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  eventticket EventTicket[] @relation("TicketToEventTicket")
-  orders      Order[]
+  order Order @relation(fields: [orderId], references: [id])
+
+  eventTicket EventTicket[] @relation("TicketToEventTicket")
+
+  @@index([orderId])
 }
 
 model Event {
-  id        String   @id @default(uuid())
-  date      DateTime
-  name      String
-  location  String
-  isActive  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  date        DateTime
+  name        String
+  location    String
+  isActive    Boolean  @default(false)
+  ticketStock Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  eventticket EventTicket[] @relation("EventToEventTicket")
+  eventTickets EventTicket[] @relation("EventToEventTicket")
 }
 
 model EventTicket {
   id       String @id @default(uuid())
   eventId  String
+  event    Event  @relation("EventToEventTicket", fields: [eventId], references: [id])
   ticketId String
-
-  event  Event  @relation("EventToEventTicket", fields: [eventId], references: [id])
-  ticket Ticket @relation("TicketToEventTicket", fields: [ticketId], references: [id])
+  ticket   Ticket @relation("TicketToEventTicket", fields: [ticketId], references: [id])
 
   @@index([eventId])
   @@index([ticketId])
 }
 
 model Order {
+  id              String        @id @default(uuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  paymentMethodId String
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id]) // Tambahkan relasi ini
+  isPaid          Boolean       @default(false)
+  totalPayment    Decimal
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  tickets Ticket[]
+
+  @@index([userId])
+  @@index([paymentMethodId])
+}
+
+model PaymentMethod {
   id            String   @id @default(uuid())
-  userId        String
-  ticketId      String
-  isPaid        Boolean  @default(false)
-  paymentMethod String
-  totalPayment  Decimal
+  name          String
+  paymentNumber String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  ticket Ticket @relation(fields: [ticketId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
+  orders Order[] // Tambahkan ini untuk menunjukkan hubungan sebaliknya
+  images Image[]
+}
 
-  @@index([ticketId])
+model Image {
+  id              String   @id @default(uuid())
+  userId          String
+  paymentMethodId String
+  url             String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+
+  @@index([paymentMethodId])
   @@index([userId])
 }

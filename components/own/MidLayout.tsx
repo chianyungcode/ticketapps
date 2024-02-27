@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
 interface MidLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -7,7 +8,7 @@ interface MidLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
 const MidLayout = ({ children, className, ...props }: MidLayoutProps) => {
   return (
     <div
-      className={`mx-auto w-full max-w-7xl px-10 pb-10 pt-20 ${className}`}
+      className={cn("mx-auto w-full max-w-7xl px-10 pb-10 pt-20", className)}
       {...props}
     >
       {/*<div className="mid-gradient" />*/}

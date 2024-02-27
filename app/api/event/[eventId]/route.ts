@@ -26,7 +26,7 @@ export const PATCH = async (
   { params }: { params: { eventId: string } },
 ) => {
   try {
-    const { isActive } = await req.json();
+    const { isActive, ticketStock } = await req.json();
 
     const updatedEvent = await prismadb.event.update({
       where: {
@@ -34,6 +34,7 @@ export const PATCH = async (
       },
       data: {
         isActive,
+        ticketStock,
       },
     });
 
