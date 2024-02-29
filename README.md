@@ -6,4 +6,4 @@ This application was built to accommodate the increasingly growing and numerous 
 
 **Client:** React, TailwindCSS, React-Hook-Form, Clerk Authentication
 
-**Server:** NextJS, Clerk Authentication, Pl
+**Server:** NextJS, Clerk Authentication, Planetscale
