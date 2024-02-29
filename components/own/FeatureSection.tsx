@@ -1,36 +1,126 @@
+import Image from "next/image";
 import React from "react";
-import MidLayout from "./MidLayout";
-import { BarChart } from "lucide-react";
 
 const FeatureSection = () => {
   return (
-    <MidLayout className="bg-slate-50">
-      <section className="w-full space-y-20">
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <h3 className="text-center text-base font-semibold text-gray-400">
-              Features
-            </h3>
-            <h1 className="text-center text-4xl font-bold text-gray-900">
-              The CRM thats truly your own
-            </h1>
+    <section className="bg-[#F1F0EE] py-24">
+      <div className="mx-auto w-full max-w-4xl xl:max-w-6xl">
+        <h1 className="text-4xl font-bold tracking-tight text-black">
+          Perfect app for millenial.
+          <span className="block text-[#4C4542]">Never lost your event.</span>
+        </h1>
+        <div className="flex flex-col items-start gap-y-2 py-8">
+          <div className="grid w-full grid-cols-9 gap-x-2 ">
+            <div
+              id="card"
+              className="col-span-6 space-y-2 rounded-3xl bg-[#5D544F] px-10 py-8 text-white"
+            >
+              <h1 className="text-2xl font-medium tracking-tight text-white">
+                Get the best event
+              </h1>
+              <p className="text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Similique, asperiores.
+              </p>
+            </div>
+            <div
+              id="card"
+              className="relative col-span-3 space-y-2 rounded-3xl bg-[#5D544F] px-10 pt-8 text-white"
+            >
+              <h1 className="text-2xl font-medium tracking-tight text-white">
+                Create moment
+              </h1>
+              <p className="text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Similique, asperiores.
+              </p>
+              <Image
+                src="/assets/Illustration.svg"
+                alt="svg-illustration"
+                width={250}
+                height={100}
+              />
+            </div>
           </div>
-          <p className="text-center font-medium text-gray-400">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Id,
-            deserunt molestiae, corporis numquam dolores obcaecati nihil
-            doloremque iure ipsa dolorem aliquam sapiente ea, voluptates ipsam
-            aspernatur provident perferendis corrupti dignissimos.
-          </p>
-        </div>
-        <div className="grid grid-cols-3">
-          <div className="space-y-2">
-            <div className="flex size-10 items-center justify-center self-center rounded-full bg-slate-400 p-2">
-              <BarChart className="h-4 w-4 text-gray-900" />
+          <div className="grid w-full grid-cols-9 gap-x-2 ">
+            <div
+              id="card"
+              className="col-span-3 space-y-2 rounded-3xl bg-[#5D544F] px-10 py-8 text-white"
+            >
+              <h1 className="text-2xl font-medium tracking-tight text-white">
+                Get the best event
+              </h1>
+              <p className="text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Similique, asperiores.
+              </p>
+            </div>
+            <div
+              id="card"
+              className="col-span-3 space-y-2 rounded-3xl bg-[#5D544F] px-10 py-8 text-white"
+            >
+              <h1 className="text-2xl font-medium tracking-tight text-white">
+                Get the best event
+              </h1>
+              <p className="text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Similique, asperiores.
+              </p>
+            </div>
+            <div
+              id="card"
+              className="col-span-3 space-y-2 rounded-3xl bg-[#5D544F] px-10 pt-8 text-white"
+            >
+              <h1 className="text-2xl font-medium tracking-tight text-white">
+                Get the best event
+              </h1>
+              <p className="text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Similique, asperiores.
+              </p>
+              <Image
+                src="/assets/Illustration.svg"
+                alt="svg-illustration"
+                width={250}
+                height={100}
+              />
+            </div>
+          </div>
+          <div className="grid w-full grid-cols-9 gap-x-2">
+            <div
+              id="card"
+              className="col-span-3 space-y-2 rounded-3xl bg-[#5D544F] px-10 pt-8 text-white"
+            >
+              <h1 className="text-2xl font-medium tracking-tight text-white">
+                Get the best event
+              </h1>
+              <p className="text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Similique, asperiores.
+              </p>
+              <Image
+                src="/assets/Illustration.svg"
+                alt="svg-illustration"
+                width={250}
+                height={100}
+              />
+            </div>
+            <div
+              id="card"
+              className="col-span-6 space-y-2 rounded-3xl bg-[#5D544F] px-10 py-8 text-white"
+            >
+              <h1 className="text-2xl font-medium tracking-tight text-white">
+                Get the best event
+              </h1>
+              <p className="text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Similique, asperiores.
+              </p>
             </div>
           </div>
         </div>
-      </section>
-    </MidLayout>
+      </div>
+    </section>
   );
 };
 
