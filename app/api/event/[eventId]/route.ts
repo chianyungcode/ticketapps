@@ -26,7 +26,7 @@ export const PATCH = async (
   { params }: { params: { eventId: string } },
 ) => {
   try {
-    const { isActive, ticketStock } = await req.json();
+    const { isActive, ticketStock, imageUrl } = await req.json();
 
     const updatedEvent = await prismadb.event.update({
       where: {
@@ -38,13 +38,35 @@ export const PATCH = async (
       },
     });
 
+    if (imageUrl) {
+      await prismadb.eventImage.create({
+        data: {
+          eventId: params.eventId,
+          url: imageUrl,
+        },
+      });
+    }
+
+    // if (images && images.length > 0) {
+    //   await Promise.all(
+    //     images.map((url: string) => {
+    //       prismadb.eventImage.create({
+    //         data: {
+    //           eventId: params.eventId,
+    //           url,
+    //         },
+    //       });
+    //     }),
+    //   );
+    // }
+
     return NextResponse.json(updatedEvent);
   } catch (error) {
     console.log(error);
   }
 };
 
-export const GET = async (
+export const POST = async (
   _: Request,
   { params }: { params: { eventId: string } },
 ) => {

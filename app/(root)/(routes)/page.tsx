@@ -21,7 +21,7 @@ const HomePage = async () => {
         <FeatureSection />
         <TestimonialSection />
         <BlogSection />
-        <Footer />
+        {/* <Footer /> */}
       </main>
     </>
   );

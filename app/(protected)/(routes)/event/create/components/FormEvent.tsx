@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Event } from "@prisma/client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import axios from "axios";
@@ -25,7 +25,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { UploadButton, cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -35,6 +35,7 @@ import Heading from "@/components/own/Heading";
 import styles from "./FormEvent.module.css";
 import { useQuery } from "@tanstack/react-query";
 import { getSpecificData } from "@/lib/actions";
+import toast from "react-hot-toast";
 
 interface FormEventProps {
   initialData: Event | null;
@@ -52,19 +53,7 @@ const formSchema = z.object({
 const FormEvent: React.FC<FormEventProps> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
-
-  // Query Function
-  const { isLoading, data } = useQuery({
-    queryKey: ["event"],
-    queryFn: async () => {
-      const response = await getSpecificData(`/api/event/${params.eventId}`);
-      const jsonData = response.data;
-      console.log(jsonData);
-
-      return jsonData;
-    },
-    initialData: initialData,
-  });
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,13 +74,15 @@ const FormEvent: React.FC<FormEventProps> = ({ initialData }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const url = initialData ? `/api/event/${params.eventId}` : "/api/event";
-
-      const httpMethod = initialData ? axios.patch : axios.get;
-
-      const response = await httpMethod(url, {
+      const httpMethod = initialData ? axios.patch : axios.post;
+      const body = {
         ...values,
         ticketStock: parseInt(values.ticketStock),
-      });
+        imageUrl: uploadedFileUrl,
+      };
+
+      const response = await httpMethod(url, body);
+      console.log(response.data);
 
       router.push("/events");
     } catch (error) {
@@ -155,7 +146,7 @@ const FormEvent: React.FC<FormEventProps> = ({ initialData }) => {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
+                          "w-full pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground",
                         )}
                       >
@@ -185,6 +176,20 @@ const FormEvent: React.FC<FormEventProps> = ({ initialData }) => {
               </FormItem>
             )}
           />
+          <UploadButton
+            className="w-full bg-black px-2 py-4 "
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              console.log("Files: ", res);
+              setUploadedFileUrl(res[0].url);
+              toast("Upload succesfull!");
+            }}
+            onUploadError={(error: Error) => {
+              // Do something with the error.
+              alert(`ERROR! ${error.message}`);
+            }}
+          />
+
           <FormField
             control={form.control}
             name="ticketStock"

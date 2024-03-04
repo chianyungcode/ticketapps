@@ -14,7 +14,6 @@ const EventDetailPage: React.FC<EventDetailPageProps> = async ({ params }) => {
       id: params.eventId,
     },
   });
-  console.log(event);
 
   if (!event) {
     return <p>Loading</p>;

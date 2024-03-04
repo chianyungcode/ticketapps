@@ -2,6 +2,7 @@
 
 import MidLayout from "@/components/own/MidLayout";
 import { UploadButton } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 export default function UploadPage() {
   return (
@@ -12,8 +13,9 @@ export default function UploadPage() {
           endpoint="imageUploader"
           onClientUploadComplete={(res) => {
             // Do something with the response
+
             console.log("Files: ", res);
-            alert("Upload Completed");
+            toast("Upload succesfull!");
           }}
           onUploadError={(error: Error) => {
             // Do something with the error.

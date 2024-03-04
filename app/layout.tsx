@@ -3,11 +3,11 @@ import "./globals.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark, neobrutalism } from "@clerk/themes";
+import { dark } from "@clerk/themes";
 import localFont from "next/font/local";
-import { Toaster } from "react-hot-toast";
 import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryClientProvider } from "@/provider/ReactQueryProvider";
+import ToastProvider from "@/provider/ToastProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -38,7 +38,7 @@ export default function RootLayout({
       <ReactQueryClientProvider>
         <html lang="en" className={plusJakartaSans.className}>
           <body className="min-h-screen bg-[#F6F6F4]">
-            <Toaster />
+            <ToastProvider />
             {children}
           </body>
         </html>
