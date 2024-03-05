@@ -9,9 +9,12 @@ interface EventDetailPageProps {
 }
 
 const EventDetailPage: React.FC<EventDetailPageProps> = async ({ params }) => {
-  const event: Event | null = await prismadb.event.findUnique({
+  const event = await prismadb.event.findUnique({
     where: {
       id: params.eventId,
+    },
+    include: {
+      images: true,
     },
   });
 

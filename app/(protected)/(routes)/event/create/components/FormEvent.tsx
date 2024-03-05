@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Event } from "@prisma/client";
+import { Event, EventImage } from "@prisma/client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -33,12 +33,12 @@ import { Separator } from "@/components/ui/separator";
 
 import Heading from "@/components/own/Heading";
 import styles from "./FormEvent.module.css";
-import { useQuery } from "@tanstack/react-query";
-import { getSpecificData } from "@/lib/actions";
 import toast from "react-hot-toast";
+import { EventDetail } from "@/lib/types";
+import Image from "next/image";
 
 interface FormEventProps {
-  initialData: Event | null;
+  initialData: EventDetail;
 }
 
 const formSchema = z.object({
@@ -53,7 +53,9 @@ const formSchema = z.object({
 const FormEvent: React.FC<FormEventProps> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
-  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+  const [uploadedFileUrls, setUploadedFileUrls] = useState<string[] | null>(
+    null,
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -78,7 +80,7 @@ const FormEvent: React.FC<FormEventProps> = ({ initialData }) => {
       const body = {
         ...values,
         ticketStock: parseInt(values.ticketStock),
-        imageUrl: uploadedFileUrl,
+        imagesUrl: uploadedFileUrls,
       };
 
       const response = await httpMethod(url, body);
@@ -104,8 +106,18 @@ const FormEvent: React.FC<FormEventProps> = ({ initialData }) => {
     <>
       <Heading title={title} description={subtitle} />
       <Separator className="my-4" />
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <h1 className="text-2xl font-bold">Images</h1>
+          <div className="relative h-32 w-32 overflow-hidden rounded-xl transition-all hover:ring-4 hover:ring-rose-300">
+            <Image
+              src={initialData.images[0].url}
+              alt="Image"
+              fill
+              objectFit="cover"
+            />
+          </div>
           <div className={styles.container}>
             <FormField
               control={form.control}
@@ -181,7 +193,10 @@ const FormEvent: React.FC<FormEventProps> = ({ initialData }) => {
             endpoint="imageUploader"
             onClientUploadComplete={(res) => {
               console.log("Files: ", res);
-              setUploadedFileUrl(res[0].url);
+
+              const urlImages = res.map((file) => file.url);
+              setUploadedFileUrls(urlImages);
+
               toast("Upload succesfull!");
             }}
             onUploadError={(error: Error) => {
